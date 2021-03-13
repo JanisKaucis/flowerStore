@@ -27,6 +27,7 @@ $warehouseCollection = new WarehouseCollectionAlias();
 $warehouseCollection->add(new Warehouse('warehouse1', ['Tulip' => 20, 'Red Rose' => 40, 'White Rose' => 30]));
 $warehouseCollection->add(new Warehouse('warehouse2', ['Daisy' => 20, 'Red Rose' => 20, 'Yellow Rose' => 20]));
 $warehouseCollection->add(new Warehouse('warehouse3', ['Poppy' => 20, 'Pink Rose' => 30, 'White Rose' => 20]));
+
 if (($handle = fopen("storage/flowers.csv", "r")) !== FALSE) {
     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
         $num = count($data);
