@@ -31,9 +31,9 @@ $warehouseCollection->add(new Warehouse('warehouse3', ['Poppy' => 20, 'Pink Rose
 if (($handle = fopen("storage/flowers.csv", "r")) !== FALSE) {
     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
         $num = count($data);
-        for ($c=0; $c < $num; $c+=7) {
-            $warehouseCollection->add(new Warehouse($data[$c],[$data[$c+1] => intval($data[$c+2]),$data[$c+3] => intval($data[$c+4]),
-                $data[$c+5] => intval($data[$c+6])]));
+        for ($c = 0; $c < $num; $c += 7) {
+            $warehouseCollection->add(new Warehouse($data[$c], [$data[$c + 1] => intval($data[$c + 2]), $data[$c + 3] => intval($data[$c + 4]),
+                $data[$c + 5] => intval($data[$c + 6])]));
         }
     }
     fclose($handle);
@@ -41,10 +41,10 @@ if (($handle = fopen("storage/flowers.csv", "r")) !== FALSE) {
 
 $content = file_get_contents("storage/flowers.json");
 $content = (json_decode($content));
-foreach ($content as $objectName => $object){
-    foreach ($object as $array){
-        foreach ($array as $key=> $value){
-            $warehouseCollection->add(new Warehouse($objectName,[$key=>$value]));
+foreach ($content as $objectName => $object) {
+    foreach ($object as $array) {
+        foreach ($array as $key => $value) {
+            $warehouseCollection->add(new Warehouse($objectName, [$key => $value]));
         }
     }
 }
@@ -61,60 +61,97 @@ $flowerCollection->add(new Flower('Poppy', 0.60));
 $flowerShop = new FlowerShop();
 $flowerShop->totalAmountOfFlowers($warehouseCollection, $flowerCollection);
 
-//do {
 
-    //$gender = readline('Are you male of female?');
-    $gender = 'female';
-    if ($gender != 'male' && $gender != 'female') {
-        echo 'Enter valid gender please!' . PHP_EOL;
-    }
-//} while ($gender != 'male' && $gender != 'female');
-$totalPrice = 0;
-//do {
-    $flowerShop->unsetFlowerIfZero();
+// $flowerShop->unsetFlowerIfZero();
+?>
 
-    echo $flowerShop->getFlowerList($flowerCollection);
-    $counter = 0;
-    //do {
-        /* @var $flower Flower */
-      //  $flowerYouWant = readline('What flower you want to buy?');
-$flowerYouWant = 'Tulip';
+<html lang="en">
+
+<form>
+    <input type="radio" id="male" name="gender" value="male">
+    <label for="male">Male</label><br>
+    <input type="radio" id="female" name="gender" value="female">
+    <label for="female">Female</label><br>
+    <br>
+    <input type="radio" id="Tulip" name="flower" value="Tulip">
+    <label for="Tulip">Tulip</label><br>
+    <input type="radio" id="Red Rose" name="flower" value="Red Rose">
+    <label for="Red Rose">Red Rose</label><br>
+    <input type="radio" id="White Rose" name="flower" value="White Rose">
+    <label for="White Rose">White Rose</label><br>
+    <input type="radio" id="Pink Rose" name="flower" value="Pink Rose">
+    <label for="Pink Rose">Pink Rose</label><br>
+    <input type="radio" id="Yellow Rose" name="flower" value="Yellow Rose">
+    <label for="Yellow Rose">Yellow Rose</label><br>
+    <input type="radio" id="Daisy" name="flower" value="Daisy">
+    <label for="Daisy">Daisy</label><br>
+    <input type="radio" id="Poppy" name="flower" value="Poppy">
+    <label for="Poppy">Poppy</label><br>
+    <br>
+    <label for="amount">Amount:</label><br>
+    <input type="text" id="amount" name="amount"><br>
+    <br>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 5px;
+        }
+    </style>
+    <table style="width:25%">
+        <tr>
+            <th>Flower</th>
+            <th>Price</th>
+            <th>Quantity</th>
+        </tr>
+        <?php foreach ($flowerCollection->get() as $flower) : ?>
+
+            <?php foreach ($flowerShop->get() as $flowerName => $quantity) : ?>
+                <?php if ($flower->getName() == $flowerName) : ?>
+                    <tr>
+                        <td><?= $flowerName ?></td>
+                        <td> <?= $flower->getPrice() ?></td>
+                        <td> <?= $quantity ?> </td>
+                    </tr>
+
+                <?php endif; ?>
+            <?php endforeach; ?>
+        <?php endforeach; ?>
+    </table>
+    <input type="submit" name="Submit" value="Submit">
+</form>
+</html>
+<?php
+if ($_GET['Submit'] == 'Submit') {
+
+
+    $gender = $_GET['gender'];
+    $flowerYouWant = $_GET['flower'];
+    $amount = $_GET['amount'];
+
+    $totalPrice = 0;
+
+    if (preg_match('/^[0-9]*$/', $amount)) {
+
         foreach ($flowerShop->get() as $flowerName => $quantity) {
             if ($flowerName == $flowerYouWant) {
-                $counter++;
-            }
-        }
-        if ($counter == 0) {
-            echo 'Enter valid flower!' . PHP_EOL;
-        }
-  //  } while ($counter == 0);
-    $count = 0;
-   // do {
-        // $amount = readline('How many you want to buy?: ');
-$amount = 20;
-        if (preg_match('/^[0-9]*$/', $amount)) {
-
-            foreach ($flowerShop->get() as $flowerName => $quantity) {
-                if ($flowerYouWant == $flowerName) {
-                    if ($quantity >= $amount) {
-                        $count++;
-                    }
+                if ($quantity < $amount) {
+                    die('Not enough flowers in shop!' . PHP_EOL);
+                } else {
+                    $quantity -= $amount;
                 }
             }
-            if ($count == 0) {
-                echo 'Not enough flowers in shop!' . PHP_EOL;
-            }
-        } else {
-            echo 'Enter only numbers!' . PHP_EOL;
-        }
 
-  //  } while ($count == 0);
+        }
+    } else {
+        echo 'Enter only numbers!' . PHP_EOL;
+    }
 
     $totalPrice += $flowerShop->sellFlowers($flowerCollection, $flowerYouWant, $amount, $gender);
-  //  $choice = readline('Do you want to buy more flowers? y for yes and any other for no:');
-//} while ($choice == 'y');
 
-echo 'Total price is: ' . $totalPrice . PHP_EOL;
-
-
+    echo 'Total price is: ' . $totalPrice;
+} ?><br>
 
