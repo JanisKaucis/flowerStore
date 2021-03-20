@@ -16,6 +16,7 @@ class Warehouse implements MaintainceGet
     {
         $this->warehouseName = $warehouseName;
         $this->flowersAndQuantity = $flowersAndQuantity;
+
     }
 
     public function get(): array

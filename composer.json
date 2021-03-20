@@ -7,7 +7,9 @@
         }
     ],
     "require": {
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-mysqli": "*",
+        "catfan/medoo": "^1.7"
     },
     "autoload": {
         "psr-4": {

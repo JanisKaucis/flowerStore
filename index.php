@@ -7,22 +7,8 @@ use App\FlowerCollection;
 use App\FlowerShop;
 use App\Warehouse;
 use App\WarehouseCollection as WarehouseCollectionAlias;
+use Medoo\Medoo;
 
-//require_once 'Flower.php';
-//require_once 'FlowerCollection.php';
-//require_once 'Warehouse.php';
-//require_once 'WarehouseCollection.php';
-//require_once 'FlowerShop.php';
-
-//FlowerShop
-//List of flowers and prices
-//Option to purchase
-//First question: male/female
-//if female -> apply 20% discount at the end
-//3 different warehouses where flowers come from
-//flowerShop -> Warehouse1/warehouse2/warehouse3
-//
-//Warehouse 1 => flower('Tulip',20);
 $warehouseCollection = new WarehouseCollectionAlias();
 $warehouseCollection->add(new Warehouse('warehouse1', ['Tulip' => 20, 'Red Rose' => 40, 'White Rose' => 30]));
 $warehouseCollection->add(new Warehouse('warehouse2', ['Daisy' => 20, 'Red Rose' => 20, 'Yellow Rose' => 20]));
@@ -48,6 +34,19 @@ foreach ($content as $objectName => $object) {
         }
     }
 }
+
+    $database = new Medoo([
+        'database_type' => 'mysql',
+        'database_name' => 'warehouse',
+        'server' => 'localhost',
+        'username' => 'root',
+        'password' => ''
+    ]);
+    $dataCollection = $database->select('products', '*');
+    foreach ($dataCollection as $data) {
+        $warehouseCollection->add(new Warehouse($data['warehouse'], [$data['name'] => $data['quantity']]));
+    }
+
 
 $flowerCollection = new FlowerCollection();
 $flowerCollection->add(new Flower('Tulip', 1.20));
